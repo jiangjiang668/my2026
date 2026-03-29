@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI语音问答助手</title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            font-family: Arial;
+            background: #f5f5f5;
+        }
+        .student-info {
+            background: #4285F4;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .params {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            min-height: 150px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 在这里修改成你的学号和姓名！！！ -->
+<div class="student-info">
+    学号：20260001 姓名：张三
+</div>
+
+<div class="container">
+    <h2>前沿AI项目：浏览器端语音问答</h2>
+
+    <div class="params">
+        <p>温度值（创意度）：<input type="range" id="temp" min="0" max="1" step="0.1" value="0.7"> <span id="temp-value">0.7</span></p>
+        <p>最大Token：<input type="number" id="max-tokens" value="512"></p>
+    </div>
+
+    <button id="start">开始语音提问</button>
+    <button id="clear">清空</button>
+    <div id="result">等待语音输入...</div>
+</div>
+
+<script>
+    // 温度值显示同步
+    const temp = document.getElementById('temp');
+    const tempValue = document.getElementById('temp-value');
+    temp.addEventListener('input', () => {
+        tempValue.textContent = temp.value;
+    });
+
+    // 语音识别
+    const startBtn = document.getElementById('start');
+    const result = document.getElementById('result');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        alert("请使用 Chrome 或 Edge 浏览器");
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'zh-CN';
+
+    startBtn.onclick = () => {
+        startBtn.disabled = true;
+        startBtn.textContent = "聆听中...";
+        recognition.start();
+    };
+
+    recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        result.innerText = `你说：${text}\n\nAI 正在思考...`;
+        getAIAnswer(text);
+    };
+
+    recognition.onend = () => {
+        startBtn.disabled = false;
+        startBtn.textContent = "开始语音提问";
+    };
+
+    // AI 回答（可替换真实API）
+    function getAIAnswer(question) {
+        const t = temp.value;
+        const max = document.getElementById('max-tokens').value;
+
+        setTimeout(() => {
+            result.innerText = `你说：${question}\n\n【AI 回复】
+这是一个可迁移、可优化、可调参的前沿 WebAI 项目。
+当前参数：
+温度值 = ${t}
+最大Token = ${max}
+
+项目支持：语音识别、参数调节、前端展示个人信息、可部署到 GitHub Pages。
+`;
+        }, 1000);
+    }
+
+    document.getElementById('clear').onclick = () => {
+        result.innerText = "等待语音输入...";
+    };
+</script>
+
+</body>
+</html>
